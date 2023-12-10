@@ -4,12 +4,10 @@ const webhook = require('../src/discord.js')
 
 async function run() {
   const payload = github.context.payload
-  const repository = payload.repository.name
   const commits = payload.commits
   const size = commits.length
 
   console.log(`Received payload.`)
-
   console.log(`Received ${commits.length}/${size} commits...`)
 
   if (commits.length === 0) {
@@ -19,18 +17,15 @@ async function run() {
 
   const id = core.getInput('id')
   const token = core.getInput('token')
+  const username = core.getInput('username')
 
-  webhook
-    .send(
-      id,
-      token,
-      repository,
-      payload.compare,
-      commits,
-      size,
-      payload.pusher.name
-    )
-    .catch((err) => core.setFailed(err.message))
+  webhook.send(
+    id,
+    token,
+    username,
+    commits,
+    size
+  ).catch((err) => core.setFailed(err.message))
 }
 
 try {
